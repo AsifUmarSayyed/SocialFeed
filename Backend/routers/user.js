@@ -170,7 +170,7 @@ router.get('/:id',verify,async (req, res) => {
 
 
 
- router.post('/upload',imgUpload,async (req, res) => {
+ router.post('/upload',async (req, res) => {
     
                     if(req.file)
                     return  res.status(200).send({
@@ -187,7 +187,7 @@ router.get('/:id',verify,async (req, res) => {
                 
 
     
-router.put('/:id',verify, async (req, res,next) => { 
+router.put('/:id',verify,imgUpload, async (req, res,next) => { 
     console.log(req.params.id);
       
             // const {error}=userValidation(req.body);
@@ -206,7 +206,7 @@ router.put('/:id',verify, async (req, res,next) => {
                     $set:{
                         firstName:req.body.firstName,
                         lastName:req.body.lastName,
-                        photo:req.body.photo,
+                        photo:req.file.path,
                         name:req.body.name,
                         bio:req.body.bio,
                         gender:req.body.gender,
@@ -232,6 +232,52 @@ router.put('/:id',verify, async (req, res,next) => {
                    })
             //res.send("PUT Request Called")
 })
+
+router.put('/noPic/:id',verify, async (req, res,next) => { 
+    console.log(req.params.id);
+      
+            // const {error}=userValidation(req.body);
+            // if(error) 
+            //     return  res.json({
+            //     success:false,
+            //     message: error.details[0].message,
+               
+            // })
+
+          
+
+            User.findOneAndUpdate({_id : req.params.id},
+                
+                {
+                    $set:{
+                        firstName:req.body.firstName,
+                        lastName:req.body.lastName,
+                        name:req.body.name,
+                        bio:req.body.bio,
+                        gender:req.body.gender,
+                        dob:req.body.dob,
+                        email:req.body.email,
+                        mobile:req.body.mobile
+                       
+
+             
+                    }
+                }
+                ,{new:true})
+                .then(user=> {
+                   return res.json({success:true,
+                        message:"Updated successfully", user:req.user,
+                        user})
+                }).catch(error=>{
+                   return  res.json({
+                        success:false,
+                        message: "fail to update",
+                       
+                    })
+                   })
+            //res.send("PUT Request Called")
+})
+
 
 
 

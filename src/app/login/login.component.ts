@@ -6,6 +6,7 @@ import { AuthService } from '../shared/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { GoogleLoginProvider } from 'angularx-social-login';
 import { SocialAuthService } from "angularx-social-login";
+import { ApiService } from '../api.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,8 +17,8 @@ export class LoginComponent implements OnInit {
 loginForm!:FormGroup;
 token:any;
 googleUser:any
-loginURL='http://localhost:8080/api/user/login'
-  constructor(private socialAuthService: SocialAuthService,private formBuilder:FormBuilder,private router:Router,private http:HttpClient,private toastr: ToastrService) { }
+
+  constructor(private api:ApiService, private socialAuthService: SocialAuthService,private formBuilder:FormBuilder,private router:Router,private http:HttpClient,private toastr: ToastrService) { }
 
   ngOnInit(): void {
 
@@ -36,25 +37,21 @@ login(){
     }
     return;
   }
-  this.http.post<any>(this.loginURL,this.loginForm.value).subscribe((data:any)=>{
-    console.log(data);
-    this.token=data.token;
-    localStorage.setItem('token',JSON.stringify(this.token));
-    localStorage.setItem('currentUser',JSON.stringify(data.user));
-    
-    this.router.navigate(['/feed']);         
-    this.toastr.success("Logged in successfully !!",data.message  )
-  }
+this.api.loginUser(this.loginForm.value).subscribe((data:any)=>{
+  this.token=data.token;
+  localStorage.setItem('token',JSON.stringify(this.token));
+  localStorage.setItem('currentUser',JSON.stringify(data.user));
+  console.log(data.user);
+  
+  
+  this.router.navigate(['/feed']);         
+  this.toastr.success("Logged in successfully !!",data.message  )
+}
+
   ,(err)=>{
     this.toastr.error("Login invalid","Bad request" )
     });
-  //   if(data){
-  //     this.router.navigate(['/feed']);
-  //     this.toastr.success("Logged in successfully !!",data.message  )
-  //   }else{
-  //     this.toastr.error("Something is wrong","Bad request" )
-  //   }
-  // })
+ 
 }
 
 signupWithGoogle(){
@@ -78,10 +75,11 @@ signupWithGoogle(){
         password:this.googleUser.email,
        }
      
-       this.http.post<any>("http://localhost:8080/api/user/googleuser/",user).subscribe(res=>{
-         console.log(res);
+      //  this.http.post<any>("http://localhost:8080/api/user/googleuser/",user).subscribe(res=>{
+      this.api.postGoogleUser(user).subscribe(res=>{   
+      console.log(res);
          
-         this.http.post<any>(this.loginURL,{email:res.user.email, password:res.user.email}).subscribe((data:any)=>{
+      this.api.loginUser({email:res.user.email, password:res.user.email}).subscribe((data:any)=>{
           console.log(data);
           this.token=data.token;
           localStorage.setItem('token',JSON.stringify(this.token));

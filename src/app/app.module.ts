@@ -8,7 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { FeedComponent } from './feed/feed.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AvatarModule } from 'ngx-avatar';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,6 +21,8 @@ import { GoogleLoginProvider, SocialLoginModule } from 'angularx-social-login';
 import { NgxSkeletonLoaderModule } from "ngx-skeleton-loader";
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { DocamoInterceptor } from './docamo.interceptor';
+
 
 
 @NgModule({
@@ -30,7 +32,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     LoginComponent,
     FeedComponent,
     HeaderComponent,
-    EditProfileComponent
+    EditProfileComponent,
+   
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     NgxSkeletonLoaderModule.forRoot(),
     InfiniteScrollModule,
     NgxSpinnerModule,
-   
+     
 
     
 
@@ -69,7 +72,14 @@ import { NgxSpinnerModule } from 'ngx-spinner';
           }
         ]
       }
-    },],
+    },
+  
+    {
+      provide:HTTP_INTERCEPTORS,
+      useClass:DocamoInterceptor,
+      multi:true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

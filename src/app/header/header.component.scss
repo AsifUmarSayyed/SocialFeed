@@ -1,4 +1,9 @@
 /* Color of the links BEFORE scroll */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+*{
+  font-family: 'Comic Neue', cursive;
+}
 .navbar-scroll .nav-link,
 .navbar-scroll .navbar-toggler-icon,
 .navbar-scroll .navbar-brand {
@@ -32,9 +37,10 @@
   height: 3.5rem;
 }
 h3{
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
 }
 .uname{
+  font-size: 25px;
   padding: 15px;
 }

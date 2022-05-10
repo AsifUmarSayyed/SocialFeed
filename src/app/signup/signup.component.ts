@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,8 +12,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class SignupComponent implements OnInit {
 signupForm!:FormGroup;
-signupURL='http://localhost:8080/api/user/'
-  constructor(private router:Router,private formBuilder:FormBuilder,private http:HttpClient,private toastr: ToastrService) { }
+// signupURL='http://localhost:8080/api/user/'
+  constructor(private api:ApiService, private router:Router,private formBuilder:FormBuilder,private http:HttpClient,private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
@@ -24,7 +25,8 @@ signupURL='http://localhost:8080/api/user/'
     });
   }
   signup(){
-    this.http.post<any>(this.signupURL,this.signupForm.value).subscribe((data:any)=>{
+    // this.http.post<any>(this.signupURL,this.signupForm.value).subscribe((data:any)=>{
+      this.api.postUser(this.signupForm.value).subscribe((data:any)=>{  
       console.log(data);
       if(data.success){
       this.router.navigate(['/login']);         

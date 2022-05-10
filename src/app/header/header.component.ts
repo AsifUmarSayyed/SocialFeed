@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-header',
@@ -18,9 +19,12 @@ export class HeaderComponent implements OnInit {
   username:any;
   user:any=[];
   img:any;
-  constructor(private formBuilder:FormBuilder,private router:Router,private toastr: ToastrService,private http:HttpClient) { }
+  baseUrl:any
+  constructor(private api: ApiService,private formBuilder:FormBuilder,private router:Router,private toastr: ToastrService,private http:HttpClient) { }
 
+  
   ngOnInit(): void {
+    this.baseUrl=this.api.baseUrl
     if(localStorage.getItem('currentUser')){
       this.currentUser=JSON.parse(localStorage.getItem('currentUser')!)
       console.log(this.currentUser._id);
@@ -38,7 +42,8 @@ export class HeaderComponent implements OnInit {
      verifypassword: ['', Validators.required],
     });
 
-    this.http.get<any>(this.UpdatedProfileURL+this.currentUser._id,{ headers: { "auth-token": this.token }}).subscribe((data:any)=>{
+    // this.http.get<any>(this.UpdatedProfileURL+this.currentUser._id,{ headers: { "auth-token": this.token }}).subscribe((data:any)=>{
+     this.api.getOneUser(this.currentUser._id).subscribe((data:any)=>{
       console.log(data);
       console.log(data.users.firstName);
       this.img=data.users.photo;
@@ -46,7 +51,8 @@ export class HeaderComponent implements OnInit {
     })
   }
   onclickchange(){
-    this.http.get<any>(this.UpdatedProfileURL + this.currentUser._id, { headers: { "auth-token": this.token } }).subscribe((data: any) => {
+    // this.http.get<any>(this.UpdatedProfileURL + this.currentUser._id, { headers: { "auth-token": this.token } }).subscribe((data: any) => {
+      this.api.getOneUser(this.currentUser._id).subscribe((data:any)=>{
       console.log(data);
     this.user=data.users;
     })
@@ -62,7 +68,8 @@ export class HeaderComponent implements OnInit {
      if(this.passwordForm.value.newpassword==this.passwordForm.value.verifypassword){
      console.log('hii');
     
-      this.http.put(this.changeURL+this.currentUser._id,{password:this.passwordForm.value.password,newPassword:this.passwordForm.value.newpassword},{ headers: { "auth-token": this.token }}).subscribe((data:any)=>{
+      // this.http.put(this.changeURL+this.currentUser._id,{password:this.passwordForm.value.password,newPassword:this.passwordForm.value.newpassword},{ headers: { "auth-token": this.token }}).subscribe((data:any)=>{
+        this.api.updateUser(this.currentUser._id,{password:this.passwordForm.value.password,newPassword:this.passwordForm.value.newpassword}).subscribe((data:any)=>{
         console.log(data);
         if(data.success){
         this.toastr.success("Password changed successfully !!",data.message  )

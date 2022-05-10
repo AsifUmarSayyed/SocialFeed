@@ -4,6 +4,7 @@
 .container{
     padding: 20px;
 }
+
 .card{
     padding:20px;
 }
@@ -35,9 +36,9 @@ i{
 .fas{
 position: fixed;
 left:80%;
-top: 15%;
+top: 80%;
 
-font-size: 50px;
+font-size: 80px;
 }
 .left{
     display: flex;
@@ -46,5 +47,6 @@ font-size: 50px;
 .allComment
 {
     overflow:scroll;
-    height: 120px;
+    max-height: 520px;
+    min-height: 200px;
 }
